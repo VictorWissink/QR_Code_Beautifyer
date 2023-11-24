@@ -26,8 +26,11 @@ public class SVGDocumentSaver {
         System.out.println("SVG saved to: " + outputFile.getAbsolutePath());
     }
 
-    public static void saveAsPNG(Document svgDocument, String path) throws Exception {
+    public static void saveSVGAsPNG(Document svgDocument, String path) throws Exception {
         byte[] imageData = createPNGFromSVG(svgDocument);
+        saveOutputStreamAsPNG(imageData, path);
+    }
+    public static void saveOutputStreamAsPNG(byte[] imageData, String path) throws Exception {
         try (FileOutputStream outputStream = new FileOutputStream(path)) {
             outputStream.write(imageData);
             System.out.println("PNG saved to: " + path);

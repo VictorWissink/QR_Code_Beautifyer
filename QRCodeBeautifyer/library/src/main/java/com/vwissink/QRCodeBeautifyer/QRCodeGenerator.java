@@ -5,21 +5,20 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import static com.vwissink.QRCodeBeautifyer.SVGDocumentSaver.createPNGFromSVG;
+
 public class QRCodeGenerator {
-    private final int width;
-    private final int height;
+    private int width = 400;
+    private int height = 450;
 
     private String color = "white";
     private int whiteTextGradientIndex = 0;
     private int blackTextGradientIndex = 0;
     private int cycleCounter = 0;
     private int cycleThreshold = 5; // Number of cycles before switching text color
-
-    private boolean saveAsPNG = false;
-    private boolean saveAsSVG = false;
-
     private String startColor = "rgb(253,200,48)";
-
     private String stopColor = "rgb(243,115,53)";
 
     String[][] gradientsWhiteText = new String[][]{
@@ -54,7 +53,6 @@ public class QRCodeGenerator {
             {"rgb(48, 79, 254)", "rgb(0, 145, 234)"}         // Royal blue to sky blue
 
     };
-
     String[][] gradientsBlackText = new String[][]{
             {"rgb(255, 255, 200)", "rgb(255, 250, 150)"},  // Light yellow to pale yellow
             {"rgb(200, 250, 255)", "rgb(150, 200, 255)"},  // Light blue to soft blue
@@ -88,9 +86,7 @@ public class QRCodeGenerator {
 
     };
 
-    public QRCodeGenerator(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public QRCodeGenerator() {
     }
 
     // Change the number of cycles before switching text color, default is 5
@@ -98,30 +94,34 @@ public class QRCodeGenerator {
         this.cycleThreshold = threshold;
     }
 
-    public void saveAsPNG() {
-        saveAsPNG = true;
+    public void setDimensions(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
-    public void setSaveAsSVG() {
-        saveAsSVG = true;
+    public void generateAndSaveQRCodeAsPNG(String url, String topLabel, String bottomLabel, String name) throws Exception {
+        Document qrCodeCard = drawQRCodeCard(url, topLabel, bottomLabel);
+        SVGDocumentSaver.saveSVGAsPNG(qrCodeCard, String.format("target/%s.png", name));
     }
 
-    public void generateAndSaveQRCode(String url, String topLabel, String bottomLabel) throws Exception {
-        generateAndSaveQRCode(url, topLabel, bottomLabel, "QRcode");
+    public void generateAndSaveQRCodeAsSVG(String url, String topLabel, String bottomLabel, String name) throws Exception {
+        Document qrCodeCard = drawQRCodeCard(url, topLabel, bottomLabel);
+        SVGDocumentSaver.saveAsSVG(qrCodeCard, String.format("target/%s.svg", name));
     }
-    public void generateAndSaveQRCode(String url, String topLabel, String bottomLabel, String name) throws Exception {
+
+    public byte[] genereateQRCodePNG(String url, String topLabel, String bottomLabel) throws Exception {
+        Document qrCodeCard = drawQRCodeCard(url, topLabel, bottomLabel);
+        return SVGDocumentSaver.createPNGFromSVG(qrCodeCard);
+    }
+
+    private Document drawQRCodeCard(String url, String topLabel, String bottomLabel) throws Exception {
         BitMatrix bitMatrix = generateQRCode(url, width, height);
         Document document = SVGDocumentCreator.createSVGDocument(width, height);
         SVGDocumentCreator.addGradientBackground(document, startColor, stopColor);
         SVGDocumentCreator.drawQRCode(bitMatrix, document, color);
         SVGDocumentCreator.addTextLabels(document, width, height, topLabel, bottomLabel, color);
-        if (saveAsPNG) {
-            SVGDocumentSaver.saveAsPNG(document, String.format("target/%s.png", name));
-        }
-        if (saveAsSVG) {
-            SVGDocumentSaver.saveAsSVG(document, String.format("target/%s.svg", name));
-        }
         cycleStartStopColors();
+        return document;
     }
 
     private static BitMatrix generateQRCode(String url, int width, int height) throws Exception {
