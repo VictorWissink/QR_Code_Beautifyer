@@ -3,13 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.vwissink.QRCodeBeautifyer</groupId>
+        <artifactId>QRCodeBeautifyer</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>com.vwissink.QRCodeBeautifyer</groupId>
-    <artifactId>QR.Code.Beautifyer</artifactId>
+    <artifactId>QRCodeBeautifyerLib</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>Create Beautiful QR Codes in one line</description>
     <url>https://github.com/VictorWissink/QR_Code_Beautifyer</url>
     <packaging>jar</packaging>
+    <name>library</name>
 
     <dependencies>
         <!--  QR code generator library -->
@@ -57,7 +62,6 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-<!--                            <mainClass>fully.qualified.MainClass</mainClass>-->
                         </manifest>
                     </archive>
                 </configuration>
