@@ -11,7 +11,10 @@ public class QRCodeGenerator {
     private int whiteTextGradientIndex = 0;
     private int blackTextGradientIndex = 0;
     private int cycleCounter = 0;
-    private final int cycleThreshold = 5; // Number of cycles before switching text color
+    private int cycleThreshold = 5; // Number of cycles before switching text color
+
+    private boolean saveAsPNG = false;
+    private boolean saveAsSVG = false;
 
     private String startColor = "rgb(253,200,48)";
 
@@ -56,6 +59,19 @@ public class QRCodeGenerator {
         this.height = height;
     }
 
+    // Change the number of cycles before switching text color, default is 5
+    public void setCycleThreshold(int threshold) {
+        this.cycleThreshold = threshold;
+    }
+
+    public void saveAsPNG() {
+        saveAsPNG = true;
+    }
+
+    public void setSaveAsSVG() {
+        saveAsSVG = true;
+    }
+
     public void generateAndSaveQRCode(String url, String topLabel, String bottomLabel) throws Exception {
         generateAndSaveQRCode(url, topLabel, bottomLabel, "QRcode");
     }
@@ -64,8 +80,13 @@ public class QRCodeGenerator {
         Document document = SVGDocumentCreator.createSVGDocument(width, height);
         SVGDocumentCreator.addGradientBackground(document, startColor, stopColor);
         SVGDocumentCreator.drawQRCode(bitMatrix, document, color);
-        SVGDocumentCreator.addTextLabels(document, height, topLabel, bottomLabel, color);
-        SVGDocumentCreator.saveAsSVG(document, String.format("target/%s.svg", name));
+        SVGDocumentCreator.addTextLabels(document, width, height, topLabel, bottomLabel, color);
+        if (saveAsPNG) {
+            SVGDocumentSaver.saveAsPNG(document, String.format("target/%s.png", name));
+        }
+        if (saveAsSVG) {
+            SVGDocumentSaver.saveAsSVG(document, String.format("target/%s.svg", name));
+        }
         cycleStartStopColors();
     }
 
