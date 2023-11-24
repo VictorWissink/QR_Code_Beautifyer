@@ -74,7 +74,7 @@ public class SVGDocumentCreator {
         textTop.setAttribute("font-family", "Arial, sans-serif");
         textTop.setAttribute("font-weight", "bold");
         textTop.setAttribute("fill", color);
-        textTop.setTextContent(topLabel.toUpperCase());
+        textTop.setTextContent(topLabel);
         svgRoot.appendChild(textTop);
 
         // Bottom label
