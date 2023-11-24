@@ -1,3 +1,5 @@
+package com.vwissink.QRCodeBeautifyer;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -1,3 +1,5 @@
+package com.vwissink.QRCodeBeautifyer;
+
 import com.google.zxing.common.BitMatrix;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
