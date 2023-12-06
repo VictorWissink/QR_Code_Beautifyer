@@ -18,10 +18,10 @@ public class QRCodeGenerator {
     private int blackTextGradientIndex = 0;
     private int cycleCounter = 0;
     private int cycleThreshold = 5; // Number of cycles before switching text color
-    private String startColor = "rgb(253,200,48)";
-    private String stopColor = "rgb(243,115,53)";
+    private String startColor;
+    private String stopColor;
 
-    String[][] gradientsWhiteText = new String[][]{
+    private String[][] gradientsWhiteText = new String[][]{
             {"rgb(52, 143, 80)", "rgb(86, 180, 211)"},  // Green to light blue
             {"rgb(136, 21, 204)", "rgb(233, 64, 87)"},  // Purple to pink
             {"rgb(17, 153, 142)", "rgb(56, 239, 125)"}, // Teal to light green
@@ -49,7 +49,7 @@ public class QRCodeGenerator {
             {"rgb(213, 0, 249)", "rgb(255, 64, 129)"},       // Magenta to bright pink
             {"rgb(48, 79, 254)", "rgb(0, 145, 234)"}         // Royal blue to sky blue
     };
-    String[][] gradientsBlackText = new String[][]{
+    private String[][] gradientsBlackText = new String[][]{
             {"rgb(255, 255, 200)", "rgb(255, 250, 150)"},  // Light yellow to pale yellow
             {"rgb(200, 250, 255)", "rgb(150, 200, 255)"},  // Light blue to soft blue
             {"rgb(255, 220, 200)", "rgb(255, 180, 150)"},  // Pale orange to light orange
@@ -113,12 +113,12 @@ public class QRCodeGenerator {
     }
 
     private Document drawQRCodeCard(String url, String topLabel, String bottomLabel) throws Exception {
+        cycleStartStopColors();
         BitMatrix bitMatrix = generateQRCode(url, width, height);
         Document document = SVGDocumentCreator.createSVGDocument(width, height);
         SVGDocumentCreator.addGradientBackground(document, startColor, stopColor);
         SVGDocumentCreator.drawQRCode(bitMatrix, document, color);
         SVGDocumentCreator.addTextLabels(document, width, height, topLabel, bottomLabel, color);
-        cycleStartStopColors();
         return document;
     }
 
@@ -146,5 +146,13 @@ public class QRCodeGenerator {
             // Reset the counter after completing both white and black text cycles
             cycleCounter = 0;
         }
+    }
+
+    public void setGradientsBlackText(String[][] gradientsBlackText) {
+        this.gradientsBlackText = gradientsBlackText;
+    }
+
+    public void setGradientsWhiteText(String[][] gradientsWhiteText) {
+        this.gradientsWhiteText = gradientsWhiteText;
     }
 }
